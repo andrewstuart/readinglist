@@ -7,11 +7,10 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/toqueteos/webbrowser"
 )
-import (
-	"os/exec"
-	"os/user"
-)
+import "os/user"
 
 const listFileName = "list.json"
 
@@ -135,8 +134,7 @@ func warnEmptyList() {
 }
 
 func tryOpen(link string) {
-	cmd := exec.Command("xdg-open", link)
-	err := cmd.Run()
+	err := webbrowser.Open(link)
 	if err != nil {
 		fmt.Println(link)
 	}
