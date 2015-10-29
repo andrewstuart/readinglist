@@ -16,10 +16,10 @@ const linksFileName = "links.json"
 
 var usage = fmt.Sprintf(`
 usage: 
+ - %s [(ls|show)] - Show all links
  - %s push <link> - Add a link
  - %s pop - Print and remove the most recent link
  - %s shift - Print and remove the oldest link
- - %s (ls|show) - Show all links
  - %s [open] <number> - Open the link at number <number>
  `, os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0])
 
@@ -28,7 +28,7 @@ var rlHome, rlFileName string
 func init() {
 	dir, err := homedir.Dir()
 	if err != nil {
-		log.Fatal("Could not determine home directory for list storage.")
+		log.Fatal("Could not determine home directory for reading list storage.")
 	}
 
 	rlHome = fmt.Sprintf("%s/.local/readinglinks/", dir)
@@ -44,11 +44,6 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Println(usage)
-		os.Exit(1)
-	}
-
 	f, err := getFile()
 	if err != nil {
 		log.Fatal(err)
@@ -62,10 +57,16 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if len(os.Args) < 2 {
+		printLinks(links)
+		return
+	}
+
 	switch os.Args[1] {
 	case "push":
 		if len(os.Args) < 3 {
 			warnEmptylinks()
+			return
 		}
 
 		links = append(links, os.Args[2])
@@ -80,7 +81,7 @@ func main() {
 	case "shift":
 		if len(links) < 1 {
 			fmt.Println("No items in links")
-			os.Exit(0)
+			return
 		}
 
 		tryOpen(links[0])
@@ -106,7 +107,7 @@ func main() {
 func tryOpenN(links []string, arg int) {
 	if len(os.Args) < arg+1 {
 		fmt.Println(usage)
-		os.Exit(0)
+		return
 	}
 
 	i, err := strconv.Atoi(os.Args[arg])
@@ -134,7 +135,6 @@ func getFile() (*os.File, error) {
 
 func warnEmptylinks() {
 	fmt.Println("No items in links")
-	os.Exit(0)
 }
 
 func tryOpen(link string) {
@@ -145,6 +145,9 @@ func tryOpen(link string) {
 }
 
 func printLinks(links []string) {
+	if len(links) < 1 {
+		fmt.Println("No items in reading list.")
+	}
 	for i := range links {
 		fmt.Printf("%d.\t%s\n", i+1, links[i])
 	}
