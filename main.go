@@ -106,6 +106,9 @@ func main() {
 		}
 
 		tryOpen(list[i-1])
+	default:
+		fmt.Println(usage)
+		os.Exit(1)
 	}
 
 	f, err = getFile()
