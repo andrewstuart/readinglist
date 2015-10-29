@@ -1,5 +1,12 @@
 # readinglist
 
+## Installation
+```bash
+go get github.com/andrewstuart/readinglist
+```
+
+## Usage
+
 ```bash
 $ readinglist ls
 
