@@ -87,33 +87,9 @@ func main() {
 		tryOpen(links[0])
 		links = links[1:]
 	case "open":
-		if len(os.Args) < 3 {
-			fmt.Println(usage)
-			os.Exit(0)
-		}
-
-		i, err := strconv.Atoi(os.Args[2])
-		if err != nil {
-			fmt.Println("Argument was not a number")
-			os.Exit(1)
-		}
-
-		if i < 1 || i > len(links) {
-			fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(links))
-			printLinks(links)
-			os.Exit(1)
-		}
-
-		tryOpen(links[i-1])
+		tryOpenN(links, 2)
 	default:
-		if len(os.Args) > 1 {
-			if i, err := strconv.Atoi(os.Args[1]); err == nil {
-				tryOpen(links[i])
-				os.Exit(0)
-			}
-		}
-		fmt.Println(usage)
-		os.Exit(1)
+		tryOpenN(links, 1)
 	}
 
 	f, err = getFile()
@@ -126,6 +102,27 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func tryOpenN(links []string, arg int) {
+	if len(os.Args) < arg+1 {
+		fmt.Println(usage)
+		os.Exit(0)
+	}
+
+	i, err := strconv.Atoi(os.Args[arg])
+	if err != nil {
+		fmt.Println("Argument was not a number")
+		os.Exit(1)
+	}
+
+	if i < 1 || i > len(links) {
+		fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(links))
+		printLinks(links)
+		os.Exit(1)
+	}
+
+	tryOpen(links[i-1])
 }
 
 func getFile() (*os.File, error) {
