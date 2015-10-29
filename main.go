@@ -100,7 +100,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		if i < 1 || i > len(list)+1 {
+		if i < 1 || i > len(list) {
 			fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(list)+1)
 			os.Exit(1)
 		}
