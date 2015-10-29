@@ -20,7 +20,7 @@ $ readinglist pop
 # opens latest link in your browser and removes it from the list
 
 $ readinglist shift
-opens oldest link in your browser and removes it from the list
+# opens oldest link in your browser and removes it from the list
 
 ```
 
