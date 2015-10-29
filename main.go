@@ -12,7 +12,7 @@ import (
 )
 import "os/user"
 
-const listFileName = "list.json"
+const linksFileName = "links.json"
 
 var usage = fmt.Sprintf(`
 usage: 
@@ -20,19 +20,19 @@ usage:
  - %s pop - Print and remove the most recent link
  - %s shift - Print and remove the oldest link
  - %s (ls|show) - Show all links
- - %s open <number> - Open the link at number <number>
+ - %s [open] <number> - Open the link at number <number>
  `, os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0])
 
 var (
-	rlHome     = "~/.local/readinglist/"
-	rlFileName = rlHome + listFileName
+	rlHome     = "~/.local/readinglinks/"
+	rlFileName = rlHome + linksFileName
 )
 
 func init() {
 	u, err := user.Current()
 	if err == nil {
-		rlHome = fmt.Sprintf("%s/.local/readinglist/", u.HomeDir)
-		rlFileName = rlHome + listFileName
+		rlHome = fmt.Sprintf("%s/.local/readinglinks/", u.HomeDir)
+		rlFileName = rlHome + linksFileName
 	}
 
 	if _, err := os.Stat(rlHome); err != nil {
@@ -54,9 +54,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var list []string
-	if err := json.NewDecoder(f).Decode(&list); err != nil {
-		list = make([]string, 0, 1)
+	var links []string
+	if err := json.NewDecoder(f).Decode(&links); err != nil {
+		links = make([]string, 0, 1)
 	}
 	err = f.Close()
 	if err != nil {
@@ -66,28 +66,26 @@ func main() {
 	switch os.Args[1] {
 	case "push":
 		if len(os.Args) < 3 {
-			warnEmptyList()
+			warnEmptylinks()
 		}
 
-		list = append(list, os.Args[2])
+		links = append(links, os.Args[2])
 	case "pop":
-		if len(list) < 1 {
+		if len(links) < 1 {
 		}
 
-		tryOpen(list[len(list)-1])
-		list = list[:len(list)-1]
+		tryOpen(links[len(links)-1])
+		links = links[:len(links)-1]
 	case "show", "ls":
-		for i := range list {
-			fmt.Printf("%d.\t%s\n", i+1, list[i])
-		}
+		printLinks(links)
 	case "shift":
-		if len(list) < 1 {
-			fmt.Println("No items in list")
+		if len(links) < 1 {
+			fmt.Println("No items in links")
 			os.Exit(0)
 		}
 
-		tryOpen(list[0])
-		list = list[1:]
+		tryOpen(links[0])
+		links = links[1:]
 	case "open":
 		if len(os.Args) < 3 {
 			fmt.Println(usage)
@@ -100,13 +98,20 @@ func main() {
 			os.Exit(1)
 		}
 
-		if i < 1 || i > len(list) {
-			fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(list)+1)
+		if i < 1 || i > len(links) {
+			fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(links))
+			printLinks(links)
 			os.Exit(1)
 		}
 
-		tryOpen(list[i-1])
+		tryOpen(links[i-1])
 	default:
+		if len(os.Args) > 1 {
+			if i, err := strconv.Atoi(os.Args[1]); err == nil {
+				tryOpen(links[i])
+				os.Exit(0)
+			}
+		}
 		fmt.Println(usage)
 		os.Exit(1)
 	}
@@ -116,7 +121,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	json.NewEncoder(f).Encode(list)
+	json.NewEncoder(f).Encode(links)
 	err = f.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -131,8 +136,8 @@ func getFile() (*os.File, error) {
 	return os.OpenFile(rlFileName, os.O_RDWR, 0550)
 }
 
-func warnEmptyList() {
-	fmt.Println("No items in list")
+func warnEmptylinks() {
+	fmt.Println("No items in links")
 	os.Exit(0)
 }
 
@@ -140,5 +145,11 @@ func tryOpen(link string) {
 	err := webbrowser.Open(link)
 	if err != nil {
 		fmt.Println(link)
+	}
+}
+
+func printLinks(links []string) {
+	for i := range links {
+		fmt.Printf("%d.\t%s\n", i+1, links[i])
 	}
 }
