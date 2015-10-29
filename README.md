@@ -16,3 +16,9 @@ $ readinglist shift
 opens oldest link in your browser and removes it from the list
 
 ```
+
+Don't like typing readinglist out?
+
+```bash
+ln -s $GOPATH/bin/{readinglist,rl}
+```
