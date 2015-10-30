@@ -105,7 +105,7 @@ func main() {
 }
 
 func tryOpenN(links []string, arg int) {
-	if len(os.Args) < arg+1 {
+	if len(os.Args) != arg+1 {
 		fmt.Println(usage)
 		return
 	}
@@ -113,6 +113,7 @@ func tryOpenN(links []string, arg int) {
 	i, err := strconv.Atoi(os.Args[arg])
 	if err != nil {
 		fmt.Println("Argument was not a number")
+		fmt.Println(usage)
 		os.Exit(1)
 	}
 
