@@ -12,11 +12,6 @@ import (
 const rangeSplit = ".."
 
 func tryOpenN(links []string, arg int) {
-	if len(args) != arg {
-		fmt.Println(usage)
-		return
-	}
-
 	from, to := args[arg], args[arg]
 
 	if strings.Contains(from, rangeSplit) {
