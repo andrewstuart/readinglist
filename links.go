@@ -49,9 +49,9 @@ func tryOpenN(links []string, arg int) {
 		os.Exit(1)
 	}
 
-	for i := fromI; i <= toI && i < len(links) && i > 0; i++ {
+	for i := fromI - 1; i < toI && i < len(links) && i >= 0; i++ {
 
-		tryOpen(links[i-1])
+		tryOpen(links[i])
 	}
 }
 
