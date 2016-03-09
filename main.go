@@ -5,43 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
-
-	"github.com/mitchellh/go-homedir"
-	"github.com/toqueteos/webbrowser"
 )
 
 const linksFileName = "links.json"
-
-var usage = fmt.Sprintf(`
-usage: 
- - %s [(ls|show)] - Show all links
- - %s push <link> - Add a link
- - %s pop - Print and remove the most recent link
- - %s shift - Print and remove the oldest link
- - %s [open] <number> - Open the link at number <number>
- `, os.Args[0], os.Args[0], os.Args[0], os.Args[0], os.Args[0])
-
-var rlHome, rlFileName string
-
-func init() {
-	dir, err := homedir.Dir()
-	if err != nil {
-		log.Fatal("Could not determine home directory for reading list storage.")
-	}
-
-	rlHome = fmt.Sprintf("%s/.local/readinglinks/", dir)
-	rlFileName = rlHome + linksFileName
-
-	if _, err := os.Stat(rlHome); err != nil {
-		err := os.MkdirAll(rlHome, 0770)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-}
 
 func main() {
 	f, err := getFile()
@@ -63,6 +30,15 @@ func main() {
 	}
 
 	switch os.Args[1] {
+	case "git":
+		if len(os.Args) < 3 {
+			fmt.Println("Missing arguments to 'git' subcommand")
+		}
+		err := runGit(os.Args[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
 	case "push":
 		if len(os.Args) < 3 {
 			warnEmptylinks()
@@ -104,28 +80,6 @@ func main() {
 	}
 }
 
-func tryOpenN(links []string, arg int) {
-	if len(os.Args) != arg+1 {
-		fmt.Println(usage)
-		return
-	}
-
-	i, err := strconv.Atoi(os.Args[arg])
-	if err != nil {
-		fmt.Println("Argument was not a number")
-		fmt.Println(usage)
-		os.Exit(1)
-	}
-
-	if i < 1 || i > len(links) {
-		fmt.Printf("Invalid number. Acceptable range: %d-%d\n", 1, len(links))
-		printLinks(links)
-		os.Exit(1)
-	}
-
-	tryOpen(links[i-1])
-}
-
 func getFile() (*os.File, error) {
 	_, err := os.Stat(rlFileName)
 	if err != nil && strings.Contains(err.Error(), "no such file or directory") {
@@ -136,20 +90,4 @@ func getFile() (*os.File, error) {
 
 func warnEmptylinks() {
 	fmt.Println("No items in links")
-}
-
-func tryOpen(link string) {
-	err := webbrowser.Open(link)
-	if err != nil {
-		fmt.Println(link)
-	}
-}
-
-func printLinks(links []string) {
-	if len(links) < 1 {
-		fmt.Println("No items in reading list.")
-	}
-	for i := range links {
-		fmt.Printf("%d.\t%s\n", i+1, links[i])
-	}
 }
