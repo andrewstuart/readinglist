@@ -8,12 +8,11 @@ go get github.com/andrewstuart/readinglist
 ## Usage
 
 ```bash
-$ readinglist ls
-
 $ readinglist push https://news.ycombinator.com
 $ readinglist push https://github.com/andrewstuart/readinglist
 # Add a few links to the repository
 
+$ readinglist ls
 1.  https://news.ycombinator.com
 2.  https://github.com/andrewstuart/readinglist
 
