@@ -18,7 +18,7 @@ func init() {
 	tpl := template.Must(template.New("usage").Parse(`
 usage: 
 - {{.name}} [(ls|show)] - Show all links
-- {{.name}} push <url> - Add a link
+- {{.name}} (push|add) <url> - Add a link
 - {{.name}} pop - Open and remove the most recent link
 - {{.name}} rm <number> - Remove a link (at <number>) from the list
 - {{.name}} shift - Open and remove the first link

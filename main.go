@@ -40,7 +40,7 @@ func main() {
 		}
 		log.Println(out)
 		return
-	case "push":
+	case "push", "add":
 		if len(os.Args) < 3 {
 			warnEmptylinks()
 			return
