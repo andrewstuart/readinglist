@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -64,6 +65,19 @@ func main() {
 		links = links[1:]
 	case "open":
 		tryOpenN(links, 2)
+	case "rm":
+		if len(os.Args) < 3 {
+			fmt.Println("No argument for rm")
+			return
+		}
+		i, err := strconv.Atoi(os.Args[2])
+
+		if err != nil {
+			fmt.Printf("Invalid number for rm: %s\n", os.Args[2])
+			return
+		}
+
+		links = append(links[0:i], links[i:]...)
 	default:
 		tryOpenN(links, 1)
 	}
