@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -70,14 +69,25 @@ func main() {
 			fmt.Println("No argument for rm")
 			return
 		}
-		i, err := strconv.Atoi(os.Args[2])
 
+		links, err = tryRemove(links, os.Args[2])
 		if err != nil {
-			fmt.Printf("Invalid number for rm: %s\n", os.Args[2])
+			fmt.Printf("Error removing link: %v\n", err)
+			return
+		}
+	case "splice":
+		if len(os.Args) < 3 {
+			fmt.Println("No argument for splice")
 			return
 		}
 
-		links = append(links[0:i], links[i:]...)
+		tryOpenN(links, 2)
+
+		links, err = tryRemove(links, os.Args[2])
+		if err != nil {
+			log.Printf("error splicing link: %v\n", err)
+			return
+		}
 	default:
 		tryOpenN(links, 1)
 	}

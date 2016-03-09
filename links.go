@@ -37,6 +37,26 @@ func tryOpen(link string) {
 	}
 }
 
+func tryRemove(links []string, number string) ([]string, error) {
+	i, err := strconv.Atoi(number)
+
+	if err != nil {
+		return links, fmt.Errorf("invalid number for rm: %s", os.Args[2])
+	}
+
+	if len(links) < i+1 {
+		return links, fmt.Errorf("invalid number, longer than list: %d", i)
+	}
+
+	if i < 1 {
+		return links, fmt.Errorf("invalid link number less than zero")
+	}
+
+	links = append(links[0:i+1], links[i+2:]...)
+
+	return links, nil
+}
+
 func printLinks(links []string) {
 	if len(links) < 1 {
 		fmt.Println("No items in reading list.")

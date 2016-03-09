@@ -20,8 +20,9 @@ usage:
 - {{.name}} [(ls|show)] - Show all links
 - {{.name}} push <url> - Add a link
 - {{.name}} pop - Print and remove the most recent link
-- {{.name}} rm <number> - Remove a link from the list
+- {{.name}} rm <number> - Remove a link (at <number>) from the list
 - {{.name}} shift - Print and remove the oldest link
+- {{.name}} splice <number> - Open and remove link at number <number>
 - {{.name}} [open] <number> - Open the link at number <number>
 `))
 
