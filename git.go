@@ -28,7 +28,12 @@ func checkGit() error {
 }
 
 func commitGit() error {
-	_, err := runGit("commit", "-a", "-m", "Action at "+time.Now().String())
+	_, err := runGit("add", rlFileName)
+	if err != nil {
+		return fmt.Errorf("error adding file %s: %v", rlFileName, err)
+	}
+
+	_, err = runGit("commit", "-m", "Action at "+time.Now().String())
 	if err != nil {
 		return fmt.Errorf("error committing: %v", err)
 	}
