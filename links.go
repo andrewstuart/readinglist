@@ -12,7 +12,7 @@ import (
 const rangeSplit = ".."
 
 func tryOpenN(links []string, arg int) {
-	if len(args) != arg+1 {
+	if len(args) != arg {
 		fmt.Println(usage)
 		return
 	}

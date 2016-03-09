@@ -88,7 +88,7 @@ func main() {
 		tryOpen(links[0])
 		links = links[1:]
 	case "open":
-		tryOpenN(links, 1)
+		tryOpenN(links, 0)
 	case "rm":
 		if len(args) < 2 {
 			fmt.Println("No argument for rm")
@@ -106,7 +106,7 @@ func main() {
 			return
 		}
 
-		tryOpenN(links, 1)
+		tryOpenN(links, 0)
 
 		links, err = tryRemove(links, args[1])
 		if err != nil {
@@ -114,7 +114,7 @@ func main() {
 			return
 		}
 	default:
-		tryOpenN(links, 1)
+		tryOpenN(links, 0)
 	}
 
 	f, err = getFile()

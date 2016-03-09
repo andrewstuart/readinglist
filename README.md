@@ -38,6 +38,15 @@ $ readinglist git init
 $ readinglist git ...
 # Run a git command inside the local data store
 
+$ readinglist -list linux add https://lwn.net
+# Add to a specific, separate list
+
+$ readinglist -list linux
+1.  https://lwn.net
+
+$ readinglist 1..3
+#Open all links 1-3
+
 ```
 
 Don't like typing readinglist out?
