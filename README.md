@@ -10,6 +10,10 @@ go get github.com/andrewstuart/readinglist
 ```bash
 $ readinglist ls
 
+$ readinglist push https://news.ycombinator.com
+$ readinglist push https://github.com/andrewstuart/readinglist
+# Add a few links to the repository
+
 1.  https://news.ycombinator.com
 2.  https://github.com/andrewstuart/readinglist
 
@@ -27,6 +31,12 @@ $ readinglist rm 3
 
 $ readinglist splice 2
 # open and remove the second link
+
+$ readinglist git init
+# Initialize a git repo to track changes
+
+$ readinglist git ...
+# Run a git command inside the local data store
 
 ```
 
