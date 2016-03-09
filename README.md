@@ -1,4 +1,5 @@
 # readinglist
+### A dead-simple CLI link management tool
 
 ## Installation
 ```bash
