@@ -14,7 +14,7 @@ func runGit(args ...string) (string, error) {
 	cmd.Dir = rlHome
 
 	//Run git commands
-	output, err := cmd.Output()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return string(output), err
 	}

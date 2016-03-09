@@ -63,9 +63,10 @@ func main() {
 		}
 		out, err := runGit(args[1:]...)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Fprintf(os.Stderr, "git error: %v\n", err)
+			os.Exit(1)
 		}
-		log.Println(out)
+		fmt.Fprintln(os.Stdout, out)
 		return
 	case "push", "add":
 		if len(args) < 2 {
@@ -122,7 +123,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	json.NewEncoder(f).Encode(links)
+	err = f.Truncate(0)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bs, err := json.MarshalIndent(links, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = f.Write(bs)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	err = f.Close()
 	if err != nil {
 		log.Fatal(err)
