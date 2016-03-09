@@ -34,10 +34,11 @@ func main() {
 		if len(os.Args) < 3 {
 			fmt.Println("Missing arguments to 'git' subcommand")
 		}
-		err := runGit(os.Args[1:])
+		out, err := runGit(os.Args[2:]...)
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Println(out)
 		return
 	case "push":
 		if len(os.Args) < 3 {
@@ -102,6 +103,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if checkGit() != nil {
+		return
+	}
+
+	commitGit()
 }
 
 func getFile() (*os.File, error) {

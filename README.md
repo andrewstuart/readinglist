@@ -22,6 +22,12 @@ $ readinglist pop
 $ readinglist shift
 # opens oldest link in your browser and removes it from the list
 
+$ readinglist rm 3
+# remove the third link
+
+$ readinglist splice 2
+# open and remove the second link
+
 ```
 
 Don't like typing readinglist out?

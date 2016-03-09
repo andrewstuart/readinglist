@@ -1,22 +1,37 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"time"
 )
 
-func runGit(args []string) error {
-	cmd := exec.Command(args[0], args[1:]...)
+func runGit(args ...string) (string, error) {
+	cmd := exec.Command("git", args[0:]...)
 
 	//Set working directory to home for git
 	cmd.Dir = rlHome
 
+	//Run git commands
 	output, err := cmd.Output()
 	if err != nil {
-		return err
+		return string(output), err
 	}
 
-	os.Stdout.Write(output)
+	return string(output), nil
+}
+
+func checkGit() error {
+	_, err := os.Stat(fmt.Sprintf("%s/.git", rlHome))
+	return err
+}
+
+func commitGit() error {
+	_, err := runGit("commit", "-a", "-m", "Action at "+time.Now().String())
+	if err != nil {
+		return fmt.Errorf("error committing: %v", err)
+	}
 
 	return nil
 }

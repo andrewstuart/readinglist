@@ -44,7 +44,7 @@ func tryRemove(links []string, number string) ([]string, error) {
 		return links, fmt.Errorf("invalid number for rm: %s", os.Args[2])
 	}
 
-	if len(links) < i+1 {
+	if len(links) < i {
 		return links, fmt.Errorf("invalid number, longer than list: %d", i)
 	}
 
@@ -52,7 +52,7 @@ func tryRemove(links []string, number string) ([]string, error) {
 		return links, fmt.Errorf("invalid link number less than zero")
 	}
 
-	links = append(links[0:i+1], links[i+2:]...)
+	links = append(links[0:i-1], links[i:]...)
 
 	return links, nil
 }
