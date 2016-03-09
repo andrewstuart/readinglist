@@ -12,12 +12,12 @@ import (
 const rangeSplit = ".."
 
 func tryOpenN(links []string, arg int) {
-	if len(os.Args) != arg+1 {
+	if len(args) != arg+1 {
 		fmt.Println(usage)
 		return
 	}
 
-	from, to := os.Args[arg], os.Args[arg]
+	from, to := args[arg], args[arg]
 
 	if strings.Contains(from, rangeSplit) {
 		rng := strings.Split(from, rangeSplit)
@@ -71,7 +71,7 @@ func tryRemove(links []string, number string) ([]string, error) {
 	i, err := strconv.Atoi(number)
 
 	if err != nil {
-		return links, fmt.Errorf("invalid number for rm: %s", os.Args[2])
+		return links, fmt.Errorf("invalid number for rm: %s", args[2])
 	}
 
 	if len(links) < i {

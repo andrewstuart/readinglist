@@ -2,13 +2,23 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
 )
 
-const linksFileName = "links.json"
+var linksFileName string
+
+var fn = flag.String("list", "links", "which list to manage")
+var args []string
+
+func init() {
+	flag.Parse()
+	linksFileName = fmt.Sprintf("%s.json", *fn)
+	args = flag.Args()
+}
 
 func main() {
 	f, err := getFile()
@@ -24,29 +34,29 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if len(os.Args) < 2 {
+	if len(args) < 2 {
 		printLinks(links)
 		return
 	}
 
-	switch os.Args[1] {
+	switch args[1] {
 	case "git":
-		if len(os.Args) < 3 {
+		if len(args) < 3 {
 			fmt.Println("Missing arguments to 'git' subcommand")
 		}
-		out, err := runGit(os.Args[2:]...)
+		out, err := runGit(args[2:]...)
 		if err != nil {
 			log.Fatal(err)
 		}
 		log.Println(out)
 		return
 	case "push", "add":
-		if len(os.Args) < 3 {
+		if len(args) < 3 {
 			warnEmptylinks()
 			return
 		}
 
-		links = append(links, os.Args[2])
+		links = append(links, args[2])
 	case "pop":
 		if len(links) < 1 {
 		}
@@ -66,25 +76,25 @@ func main() {
 	case "open":
 		tryOpenN(links, 2)
 	case "rm":
-		if len(os.Args) < 3 {
+		if len(args) < 3 {
 			fmt.Println("No argument for rm")
 			return
 		}
 
-		links, err = tryRemove(links, os.Args[2])
+		links, err = tryRemove(links, args[2])
 		if err != nil {
 			fmt.Printf("Error removing link: %v\n", err)
 			return
 		}
 	case "splice":
-		if len(os.Args) < 3 {
+		if len(args) < 3 {
 			fmt.Println("No argument for splice")
 			return
 		}
 
 		tryOpenN(links, 2)
 
-		links, err = tryRemove(links, os.Args[2])
+		links, err = tryRemove(links, args[2])
 		if err != nil {
 			log.Printf("error splicing link: %v\n", err)
 			return
