@@ -2,12 +2,9 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"text/template"
-
-	"github.com/mitchellh/go-homedir"
 )
 
 var usage string
@@ -38,20 +35,5 @@ usage:
 	}
 
 	usage = bf.String()
-
-	dir, err := homedir.Dir()
-	if err != nil {
-		log.Fatal("Could not determine home directory for reading list storage.")
-	}
-
-	rlHome = fmt.Sprintf("%s/.local/readinglinks/", dir)
-	rlFileName = rlHome + linksFileName
-
-	if _, err := os.Stat(rlHome); err != nil {
-		err := os.MkdirAll(rlHome, 0770)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 
 }

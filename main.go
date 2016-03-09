@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/mitchellh/go-homedir"
 )
 
 var linksFileName string
@@ -18,6 +20,21 @@ func init() {
 	flag.Parse()
 	linksFileName = fmt.Sprintf("%s.json", *fn)
 	args = flag.Args()
+
+	dir, err := homedir.Dir()
+	if err != nil {
+		log.Fatal("Could not determine home directory for reading list storage.")
+	}
+
+	rlHome = fmt.Sprintf("%s/.local/readinglinks/", dir)
+	rlFileName = rlHome + linksFileName
+
+	if _, err := os.Stat(rlHome); err != nil {
+		err := os.MkdirAll(rlHome, 0770)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 }
 
 func main() {
@@ -34,33 +51,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if len(args) < 2 {
+	if len(args) < 1 {
 		printLinks(links)
 		return
 	}
 
-	switch args[1] {
+	switch args[0] {
 	case "git":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("Missing arguments to 'git' subcommand")
 		}
-		out, err := runGit(args[2:]...)
+		out, err := runGit(args[1:]...)
 		if err != nil {
 			log.Fatal(err)
 		}
 		log.Println(out)
 		return
 	case "push", "add":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			warnEmptylinks()
 			return
 		}
 
-		links = append(links, args[2])
+		links = append(links, args[1])
 	case "pop":
-		if len(links) < 1 {
-		}
-
 		tryOpen(links[len(links)-1])
 		links = links[:len(links)-1]
 	case "show", "ls":
@@ -74,27 +88,27 @@ func main() {
 		tryOpen(links[0])
 		links = links[1:]
 	case "open":
-		tryOpenN(links, 2)
+		tryOpenN(links, 1)
 	case "rm":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("No argument for rm")
 			return
 		}
 
-		links, err = tryRemove(links, args[2])
+		links, err = tryRemove(links, args[1])
 		if err != nil {
 			fmt.Printf("Error removing link: %v\n", err)
 			return
 		}
 	case "splice":
-		if len(args) < 3 {
+		if len(args) < 2 {
 			fmt.Println("No argument for splice")
 			return
 		}
 
-		tryOpenN(links, 2)
+		tryOpenN(links, 1)
 
-		links, err = tryRemove(links, args[2])
+		links, err = tryRemove(links, args[1])
 		if err != nil {
 			log.Printf("error splicing link: %v\n", err)
 			return
